@@ -1,0 +1,25 @@
+#version: '3.9'
+
+services:
+  boot-server:
+    container_name: boot-server
+    image: arm64v8/eclipse-temurin:17-jre
+    network_mode: bridge # host、bridge、overlay、none
+    restart: unless-stopped # use always when prod,
+    ports:
+      - 80:8080
+    volumes:
+      - ./app.jar:/work/app.jar
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      #- SPRING_PROFILES_ACTIVE=prod
+      - TZ=Asia/Shanghai
+    working_dir: /work
+    logging:
+      driver: json-file
+      options:
+        max-size: '1g'
+        max-file: '5'
+    #depends_on:
+    #  - xxx
+    command: ["java","-jar","app.jar"]

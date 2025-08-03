@@ -1,0 +1,23 @@
+#version: '3.9'
+
+services:
+  mysql:
+    container_name: mysql-server
+    image: mysql:8.0.34
+    network_mode: bridge # host、bridge、overlay、none
+    restart: unless-stopped # use always when prod,
+    ports:
+      - 3306:3306
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_ROOT_HOST=%
+      - TZ=Asia/Shanghai
+    logging:
+      driver: json-file
+      options:
+        max-size: '1g'
+        max-file: '5'
+    #depends_on:
+    #  - xxx

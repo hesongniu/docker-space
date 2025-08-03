@@ -1,0 +1,21 @@
+#version: '3.9'
+
+services:
+  mysql:
+    container_name: redis-server
+    image: redis:7.2-alpine
+    network_mode: bridge # host、bridge、overlay、none
+    restart: unless-stopped # use always when prod,
+    ports:
+      - 6379:6379
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - TZ=Asia/Shanghai
+    logging:
+      driver: json-file
+      options:
+        max-size: '1g'
+        max-file: '5'
+    #depends_on:
+    #  - xxx
