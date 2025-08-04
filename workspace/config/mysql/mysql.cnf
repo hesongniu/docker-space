@@ -4,7 +4,7 @@ default-character-set   = utf8mb4
 
 
 [mysqld]
-# sql_mode                = NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+sql_mode                = NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 
 default-storage-engine  = InnoDB
 character-set-server    = utf8mb4
