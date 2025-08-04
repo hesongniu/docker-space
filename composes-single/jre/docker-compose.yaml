@@ -2,6 +2,7 @@
 
 services:
   boot-server:
+    platform: linux/arm64 # Target platform to run on, e.g., 'linux/amd64', 'linux/arm64', or 'windows/amd64'.
     container_name: boot-server
     image: arm64v8/eclipse-temurin:17-jre
     network_mode: bridge # host、bridge、overlay、none
