@@ -1,0 +1,28 @@
+#version: '3.9'
+
+services:
+  nacos:
+    container_name: nacos-standalone
+    image: nacos/nacos-server:v3.0.2
+    network_mode: bridge # host、bridge、overlay、none
+    restart: unless-stopped # use always when prod,
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+      - NACOS_AUTH_IDENTITY_KEY=serverIdentity
+      - NACOS_AUTH_IDENTITY_VALUE=security
+      - NACOS_AUTH_TOKEN=VGhpc0lzTXlDdXN0b21TZWNyZXRLZXkwMTIzNDU2Nzg=
+      - TZ=Asia/Shanghai
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      #- ../../workspace/logs/nacos:/home/nacos/logs
+    ports:
+      - 8847:8080 #console
+      - 8848:8848 #service node
+    logging:
+      driver: json-file
+      options:
+        max-size: '1g'
+        max-file: '5'
+    #depends_on:
+    #  - xxx
