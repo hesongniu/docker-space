@@ -1,0 +1,1 @@
+redis local data directory
