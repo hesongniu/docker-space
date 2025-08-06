@@ -3,7 +3,7 @@
 services:
   postgres:
     container_name: postgres-server
-    image: postgres:latest
+    image: postgres:17-alpine3.22
     network_mode: bridge # host、bridge、overlay、none
     restart: unless-stopped # use always when prod,
     ports:
