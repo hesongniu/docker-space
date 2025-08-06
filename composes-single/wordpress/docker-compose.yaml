@@ -1,0 +1,52 @@
+#version: '3.9'
+
+services:
+  # WordPress 服务（基于 FPM-Alpine 镜像）
+  wordpress:
+    container_name: wordpress
+    image: wordpress:php8.4-fpm-alpine
+    restart: unless-stopped
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: your_db_password
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DEBUG: 1 # 可选：启用调试模式
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - wordpress_data:/var/www/html
+    depends_on:
+      - db
+
+  # Nginx 作为反向代理
+  nginx:
+    container_name: nginx
+    image: nginx:1.29-alpine
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443 # 可选：启用 HTTPS
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - wordpress_data:/var/www/html
+      - ./nginx.conf:/etc/nginx/nginx.conf # 挂载自定义 Nginx 配置
+      #- ./certs:/etc/nginx/certs # 可选：SSL 证书目录
+    depends_on:
+      - wordpress
+
+  # Mysql 数据库
+  db:
+    container_name: db
+    image: mysql:8.0.34
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: your_root_password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: your_db_password
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+
+# 持久化存储卷
+volumes:
+  wordpress_data:
