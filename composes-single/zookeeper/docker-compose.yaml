@@ -1,0 +1,29 @@
+#version: '3.9'
+
+services:
+  zookeeper:
+    image: zookeeper:3.9.3-jre-17  # 使用官方镜像
+    container_name: zookeeper
+    restart: unless-stopped
+    ports:
+      - 2181:2181        # 客户端连接端口
+      - 8080:8080        # AdminServer 端口（可选）
+    environment:
+      ZOO_MY_ID: 1         # 节点ID（集群模式需要）
+      ZOO_SERVERS: "server.1=zookeeper:2888:3888;2181" # 集群配置（单节点可省略）
+      ZOO_4LW_COMMANDS_WHITELIST: "*"  # 允许所有四字命令（如 `stat`、`ruok`）
+    volumes:
+      - zookeeper_data:/data  # 数据持久化
+      - zookeeper_datalog:/datalog  # 事务日志持久化
+    networks:
+      - zookeeper_net
+
+volumes:
+  zookeeper_data:
+    driver: local
+  zookeeper_datalog:
+    driver: local
+
+networks:
+  zookeeper_net:
+    driver: bridge
