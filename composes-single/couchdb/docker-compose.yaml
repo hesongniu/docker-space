@@ -1,0 +1,26 @@
+#version: '3.9'
+
+services:
+  couchdb:
+    image: couchdb:3.5.0  # 官方镜像版本
+    container_name: couchdb
+    environment:
+      - COUCHDB_USER=admin       # 管理员用户名
+      - COUCHDB_PASSWORD=password # 管理员密码
+      #- COUCHDB_SECRET=your_secret_key # 集群通信密钥（单节点可省略）
+      #- ERL_FLAGS="-setcookie your_erlang_cookie" # Erlang 集群 Cookie（单节点可省略）
+    ports:
+      - 5984:5984  # HTTP API 端口 admin入口:http://localhost:5984/_utils
+      #- 4369:4369  # Erlang 端口映射（集群用）
+      #- 9100-9200:9100-9200  # 集群节点通信端口范围
+    volumes:
+      - couchdb_data:/opt/couchdb/data  # 持久化数据
+      - couchdb_config:/opt/couchdb/etc/local.d  # 自定义配置（可选）
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+
+volumes:
+  couchdb_data:
+  couchdb_config:

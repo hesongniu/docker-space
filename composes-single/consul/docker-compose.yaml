@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  consul:
+    image: consul:1.15.4  # 最新稳定版（截至2025年8月）
+    container_name: consul
+    restart: unless-stopped
+    ports:
+      - "8500:8500"  # HTTP API & Web UI
+      - "8600:8600/udp"  # DNS
+      - "8300:8300"  # RPC
+      #- "8301:8301"  # Serf LAN (集群通信)
+      #- "8302:8302"  # Serf WAN (跨数据中心)
+    volumes:
+      - consul_data:/consul/data
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0  # 绑定网络接口
+      - CONSUL_CLIENT_INTERFACE=eth0
+      - CONSUL_UI_BETA=true  # 启用新版UI（可选）
+    command: "agent -dev -client=0.0.0.0 -log-level=info"
+
+volumes:
+  consul_data:

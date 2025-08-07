@@ -1,0 +1,36 @@
+#version: '3.9'
+
+services:
+  kafka:
+    image: apache/kafka:4.0.0
+    container_name: kafka
+    ports:
+      - "9092:9092"  # 客户端连接端口
+    environment:
+      # Kafka 集群配置（KRaft 模式）
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093  # 格式：<node-id>@<host>:<port>
+
+      # 监听配置（必须包含 CONTROLLER 监听器）
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+
+      # 指定控制器监听器名称（必须与 listeners 中的名称一致）
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+      # 日志配置
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_CLUSTER_ID: MzU1Njk4ODcwMTc2MjE3MQ==  # 替换为你的 UUID
+
+      # 单机环境配置
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+
+volumes:
+  kafka_data:

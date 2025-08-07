@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  memcached:
+    image: memcached:1.6.39-alpine3.22
+    container_name: memcached
+    restart: unless-stopped
+    ports:
+      - "11211:11211"  # 默认Memcached端口
+    environment:
+      - MEMCACHED_MEMORY_LIMIT=64  # 内存限制（MB），默认64MB
+      - MEMCACHED_CONNECTIONS=1024  # 最大连接数
+      - MEMCACHED_THREADS=4        # 线程数（Alpine镜像可能不支持，需测试）
+    command: >
+      memcached
+      -m ${MEMCACHED_MEMORY_LIMIT:-64}
+      -c ${MEMCACHED_CONNECTIONS:-1024}
+      -t ${MEMCACHED_THREADS:-4}
+    #command: memcached -m 64 -c 1024 -t 4  # 直接指定参数
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - memcached_net
+
+networks:
+  memcached_net:
+    driver: bridge
