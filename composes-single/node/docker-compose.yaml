@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  node-app:
+    container_name: node_app
+    image: node:24.5.0-alpine3.22
+    network_mode: bridge # host、bridge、overlay、none
+    restart: unless-stopped # use always when prod,
+    working_dir: /usr/src/app
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./app:/usr/src/app
+    ports:
+      - 3000:3000
+    command: sh -c "npm install && node app.js"
+    environment:
+      - NODE_ENV=development
+      - TZ=Asia/Shanghai
