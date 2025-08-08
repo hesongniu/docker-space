@@ -1,0 +1,67 @@
+#version: '3.9'
+
+services:
+  nginx:
+    container_name: nginx-server
+    image: nginx:1.29-alpine
+    network_mode: bridge # host、bridge、overlay、none
+    restart: unless-stopped # use always when prod,
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /Users/xxx/DevSpaces/Yudao/yudao-ui-admin-vue3/dist:/usr/share/nginx/html
+    environment:
+      - TZ=Asia/Shanghai
+    logging:
+      driver: json-file
+      options:
+        max-size: '1g'
+        max-file: '5'
+    #depends_on:
+    #  - xxx
+
+  redis:
+    container_name: redis-server
+    image: redis:7.2-alpine
+    network_mode: bridge # host、bridge、overlay、none
+    restart: unless-stopped # use always when prod,
+    ports:
+      - 6379:6379
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ../../workspace/data/redis:/data/:rw
+    environment:
+      - TZ=Asia/Shanghai
+    logging:
+      driver: json-file
+      options:
+        max-size: '1g'
+        max-file: '5'
+    #depends_on:
+    #  - xxx
+
+  mysql:
+    container_name: mysql-server
+    image: mysql:8.0.34
+    network_mode: bridge # host、bridge、overlay、none
+    restart: unless-stopped # use always when prod,
+    ports:
+      - 3306:3306
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ../../workspace/config/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+      - ../../workspace/data/mysql:/var/lib/mysql/:rw
+      - ../../workspace/logs/mysql:/var/log/mysql/:rw
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_ROOT_HOST=%
+      - TZ=Asia/Shanghai
+    logging:
+      driver: json-file
+      options:
+        max-size: '1g'
+        max-file: '5'
+    #depends_on:
+    #  - xxx
