@@ -1,0 +1,26 @@
+#version: '3.9'
+
+services:
+  xxl-job-admin:
+    platform: linux/arm64 # Target platform to run on, e.g., 'linux/amd64', 'linux/arm64', or 'windows/amd64'.
+    container_name: xxl-job-admin
+    image: arm64v8/eclipse-temurin:17-jre
+    network_mode: bridge # host、bridge、overlay、none
+    restart: unless-stopped # use always when prod,
+    ports:
+      - 8080:8080
+    volumes:
+      - ./xxl-job-admin-3.2.0.jar:/work/app.jar
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      #- SPRING_PROFILES_ACTIVE=prod
+      - TZ=Asia/Shanghai
+    working_dir: /work
+    logging:
+      driver: json-file
+      options:
+        max-size: '1g'
+        max-file: '5'
+    depends_on:
+      - mysql
+    command: ["java","-jar","app.jar"]

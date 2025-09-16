@@ -1,0 +1,34 @@
+#version: '3.9'
+
+services:
+  elasticsearch:
+    container_name: elasticsearch
+    image: elasticsearch:9.1.0
+    environment:
+      - discovery.type=single-node  # 单节点模式
+      - xpack.security.enabled=false # 禁用安全认证（开发环境）
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g  # 限制 JVM 内存
+    ports:
+      - 9200:9200  # REST API
+      - 9300:9300  # 节点通信
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - es_data:/usr/share/elasticsearch/data  # 持久化数据
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+
+  kibana:
+    container_name: kibana
+    image: kibana:9.1.0
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+volumes:
+  es_data:
+    driver: local
