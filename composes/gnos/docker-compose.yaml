@@ -109,6 +109,7 @@ services:
       #- ../../workspace/logs/nacos:/home/nacos/logs
     ports:
       - 8848:8848 #service node
+      - 9848:9848 #gRPC
     logging:
       driver: json-file
       options:
